@@ -1,4 +1,6 @@
 #include <algorithm>
+#include <filesystem>
+#include <iostream>
 #include "tape.h"
 
 FileTape::FileTape(std::string filename) {
@@ -13,26 +15,36 @@ FileTape::~FileTape() {
 }
 
 int FileTape::read() {
-    if (!forReading) {
-        throw std::runtime_error("File open for writing");
-    }
+    prepareRead();
     position++;
     int x;
-    file >> x;
+    file.read(reinterpret_cast<char*>(&x), sizeof(x));
     return x;
 }
 
 void FileTape::write(int x) {
-    if (forReading) {
-        throw std::runtime_error("File open for reading");
-    }
+    prepareWrite();
     position++;
-    file << x;
+    file.write(reinterpret_cast<char*>(&x), sizeof(x));
 }
 
 void FileTape::move(int add) {
     position += add;
     file.seekg(position);
+}
+
+int FileTape::size() {
+    return std::filesystem::file_size(filename) / sizeof(int);
+}
+
+void FileTape::flush() {
+    file.flush();
+}
+
+void FileTape::clear() {
+    file.close();
+    std::filesystem::remove(filename);
+    file.open(filename, std::ios::binary | std::ios::out);
 }
 
 void FileTape::prepareRead() {
@@ -78,7 +90,6 @@ StatTape::~StatTape() {
 int StatTape::read() {
     if (!tape->isReading()) {
         time += std::min(resetTime, tape->getPosition() * moveTime);
-        tape->prepareRead();
     }
     time += rwTime + moveTime;
     return tape->read();
@@ -87,7 +98,6 @@ int StatTape::read() {
 void StatTape::write(int x) {
     if (tape->isReading()) {
         time += std::min(resetTime, tape->getPosition() * moveTime);
-        tape->prepareWrite();
     }
     time += rwTime + moveTime;
     tape->write(x);
@@ -96,6 +106,18 @@ void StatTape::write(int x) {
 void StatTape::move(int add) {
     time += std::abs(add) * moveTime;
     tape->move(add);
+}
+
+int StatTape::size() {
+    return tape->size();
+}
+
+void StatTape::flush() {
+    tape->flush();
+}
+
+void StatTape::clear() {
+    tape->clear();
 }
 
 int StatTape::getTime() {

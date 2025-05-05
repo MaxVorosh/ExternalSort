@@ -8,6 +8,10 @@ public:
     virtual int read() = 0;
     virtual void write(int x) = 0;
     virtual void move(int add) = 0;
+
+    virtual int size() = 0;
+    virtual void flush() = 0;
+    virtual void clear() = 0;
 };
 
 class FileTape : public Tape {
@@ -19,9 +23,13 @@ public:
     void write(int x) override;
     void move(int add) override;
 
+    int size();
+    void flush();
+    void clear();
+
     void prepareRead();
     void prepareWrite();
-    
+
     bool isReading();
     int getPosition();
 private:
@@ -39,6 +47,10 @@ public:
     int read() override;
     void write(int x) override;
     void move(int add) override;
+
+    int size();
+    void flush();
+    void clear();
 
     int getTime();
     void resetTimer();
