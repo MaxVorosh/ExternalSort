@@ -8,6 +8,8 @@ set(CMAKE_CXX_STANDARD 20)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake/modules")
 
+file(MAKE_DIRECTORY tmp)
+
 add_executable(ExternalSort
     ./src/main.cpp
     ./include/tape.h
