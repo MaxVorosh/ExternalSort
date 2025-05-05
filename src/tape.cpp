@@ -1,4 +1,4 @@
-#include <iostream>
+#include <algorithm>
 #include "tape.h"
 
 FileTape::FileTape(std::string filename) {
@@ -16,6 +16,7 @@ int FileTape::read() {
     if (!forReading) {
         throw std::runtime_error("File open for writing");
     }
+    position++;
     int x;
     file >> x;
     return x;
@@ -25,8 +26,8 @@ void FileTape::write(int x) {
     if (forReading) {
         throw std::runtime_error("File open for reading");
     }
+    position++;
     file << x;
-    file.flush();
 }
 
 void FileTape::move(int add) {
@@ -56,4 +57,51 @@ void FileTape::prepareWrite() {
 
 bool FileTape::isReading() {
     return forReading;
+}
+
+int FileTape::getPosition() {
+    return position;
+}
+
+StatTape::StatTape(std::string filename, int rwTime, int moveTime, int resetTime) {
+    tape = new FileTape(filename);
+    this->rwTime = rwTime;
+    this->moveTime = moveTime;
+    this->resetTime = resetTime;
+    time = 0;
+}
+
+StatTape::~StatTape() {
+    delete tape;
+}
+
+int StatTape::read() {
+    if (!tape->isReading()) {
+        time += std::min(resetTime, tape->getPosition() * moveTime);
+        tape->prepareRead();
+    }
+    time += rwTime + moveTime;
+    return tape->read();
+}
+
+void StatTape::write(int x) {
+    if (tape->isReading()) {
+        time += std::min(resetTime, tape->getPosition() * moveTime);
+        tape->prepareWrite();
+    }
+    time += rwTime + moveTime;
+    tape->write(x);
+}
+
+void StatTape::move(int add) {
+    time += std::abs(add) * moveTime;
+    tape->move(add);
+}
+
+int StatTape::getTime() {
+    return time;
+}
+
+void StatTape::resetTimer() {
+    time = 0;
 }

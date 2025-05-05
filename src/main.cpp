@@ -3,10 +3,9 @@
 
 int main() {
     std::string filename = "../examples/example";
-    FileTape ft = FileTape(filename);
-    ft.prepareWrite();
+    StatTape ft = StatTape(filename, 1, 10, 100);
     ft.write(1000);
-    ft.prepareRead();
     int x = ft.read();
     std::cout << x <<std::endl;
+    std::cout << ft.getTime() << std::endl;
 }

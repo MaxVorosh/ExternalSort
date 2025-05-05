@@ -12,6 +12,8 @@ add_executable(ExternalSort
     ./src/main.cpp
     ./include/tape.h
     ./src/tape.cpp
+    ./include/externalSort.h
+    ./src/externalSort.cpp
 )
 
 target_include_directories(ExternalSort PUBLIC ./include)
