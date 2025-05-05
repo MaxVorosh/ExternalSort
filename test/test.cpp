@@ -151,14 +151,14 @@ TEST_CASE("FileTape clear test") {
 TEST_CASE("StatTape time test") {
     StatTape tape(writeExample, 1, 10, 100);
     for (int i = 0; i < 1000; ++i) {
-        tape.write(i); // (rw + move) * 1000 == 11000
+        tape.write(i); // rw * 1000 == 1000
     }
     tape.flush();
     tape.move(-1000); // reset == 100
-    CHECK(tape.read() == 0); //rw + move == 11
+    CHECK(tape.read() == 0); //rw == 1
     tape.move(3); // 3 * move == 30
-    CHECK(tape.read() == 4); // rw + move == 11
-    CHECK(tape.getTime() == 11152);
+    CHECK(tape.read() == 4); // rw == 1
+    CHECK(tape.getTime() == 1132);
     tape.resetTimer();
     CHECK(tape.getTime() == 0);
 }

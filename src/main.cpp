@@ -43,6 +43,7 @@ int main(int argc, char** argv) {
             return 0;
         }
     }
+    rw = (rw + move) * sizeof(int);
 
     std::string tmpPath1 = "../tmp/1";
     std::string tmpPath2 = "../tmp/2";

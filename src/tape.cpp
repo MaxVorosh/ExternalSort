@@ -77,7 +77,7 @@ int FileTape::getPosition() {
 
 StatTape::StatTape(std::string filename, int rwTime, int moveTime, int resetTime) {
     tape = new FileTape(filename);
-    this->rwTime = rwTime;
+    this->rwTime = rwTime; // time for reading/writing int, including moves of head of tape
     this->moveTime = moveTime;
     this->resetTime = resetTime;
     time = 0;
@@ -91,7 +91,7 @@ int StatTape::read() {
     if (!tape->isReading()) {
         time += std::min(resetTime, tape->getPosition() * moveTime);
     }
-    time += rwTime + moveTime;
+    time += rwTime;
     return tape->read();
 }
 
@@ -99,7 +99,7 @@ void StatTape::write(int x) {
     if (tape->isReading()) {
         time += std::min(resetTime, tape->getPosition() * moveTime);
     }
-    time += rwTime + moveTime;
+    time += rwTime;
     tape->write(x);
 }
 
