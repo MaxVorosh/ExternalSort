@@ -30,7 +30,7 @@ void initTests() {
         return;
     }
     wasInit = true;
-    std::vector<int> small_data = {1000, 10, -1};
+    std::vector<int> small_data = {1000, -1, 10};
     std::vector<int> zero_data = {};
     std::vector<int> one_data = {1};
     std::vector<int> large_data(10000);
@@ -88,8 +88,8 @@ TEST_CASE("FileTape read test") {
     initTests();
     FileTape file(smallExample);
     CHECK(file.read() == 1000);
-    CHECK(file.read() == 10);
     CHECK(file.read() == -1);
+    CHECK(file.read() == 10);
 }
 
 TEST_CASE("FileTape write test") {
