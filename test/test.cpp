@@ -14,7 +14,6 @@ std::string oneExample = "../test/test_data/one_example";
 std::string writeExample = "../test/test_data/write_example";
 std::string tmp1Example = "../test/test_data/tmp/1";
 std::string tmp2Example = "../test/test_data/tmp/2";
-std::string tmp3Example = "../test/test_data/tmp/3";
 
 void initFile(std::string name, std::vector<int>& values) {
     std::ofstream fout(name, std::ios::binary);
@@ -48,8 +47,7 @@ void checkSorter(std::string filename, int memoryLimit, bool isSimple) {
     FileTape outFile(writeExample);
     FileTape tmp1File(tmp1Example);
     FileTape tmp2File(tmp2Example);
-    FileTape tmp3File(tmp3Example);
-    std::vector<Tape*> tapes = {&tmp1File, &tmp2File, &tmp3File};
+    std::vector<Tape*> tapes = {&tmp1File, &tmp2File};
 
     std::vector<int> data(inFile.size());
     for (int i = 0; i < data.size(); ++i) {
@@ -73,7 +71,6 @@ void checkSorter(std::string filename, int memoryLimit, bool isSimple) {
 
     REQUIRE(tmp1File.getPosition() == 0);
     REQUIRE(tmp2File.getPosition() == 0);
-    REQUIRE(tmp3File.getPosition() == 0);
 
     for (int i = 0; i < data.size(); ++i) {
         CHECK(data[i] == inFile.read());
@@ -234,9 +231,8 @@ TEST_CASE("Not enough tapes") {
         FileTape inFile(oneExample);
         FileTape outFile(writeExample);
         FileTape tmp1File(tmp1Example);
-        FileTape tmp2File(tmp2Example);
 
-        std::vector<Tape*> tapes = {&tmp1File, &tmp2File};
+        std::vector<Tape*> tapes = {&tmp1File};
         FastSorter sorter(10);
         CHECK_THROWS(sorter.sort(&inFile, &outFile, tapes));
     }

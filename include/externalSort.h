@@ -28,7 +28,7 @@ public:
     FastSorter(int memSize);
     void sort(Tape* inTape, Tape* outTape, std::vector<Tape*>& tmpTapes) override;
 private:
-    void mergeSortedBlocks(Tape* firstReader, Tape* secondReader, Tape* writer, Tape* outTape);
+    void mergeSortedBlocks(Tape* firstReader, Tape* secondReader, Tape* writer);
     void mergeMany(Tape* firstReader, Tape* secondReader, Tape* writer, int blockSize);
     void mergeBlock(Tape* firstReader, Tape* secondReader, Tape* writer, int l, int r, int edgeL, int edgeR);
 };

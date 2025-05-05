@@ -46,14 +46,12 @@ int main(int argc, char** argv) {
 
     std::string tmpPath1 = "../tmp/1";
     std::string tmpPath2 = "../tmp/2";
-    std::string tmpPath3 = "../tmp/3";
 
     StatTape in = StatTape(inName, rw, move, reset);
     StatTape out = StatTape(outName, rw, move, reset);
     StatTape tmp1 = StatTape(tmpPath1, rw, move, reset);
     StatTape tmp2 = StatTape(tmpPath2, rw, move, reset);
-    StatTape tmp3 = StatTape(tmpPath3, rw, move, reset);
-    std::vector<Tape*> tmpTapes = {&tmp1, &tmp2, &tmp3};
+    std::vector<Tape*> tmpTapes = {&tmp1, &tmp2};
 
     if (type == 1) {
         SimpleSorter sorter(memoryLimit);
@@ -63,5 +61,5 @@ int main(int argc, char** argv) {
         FastSorter sorter(memoryLimit);
         sorter.sort(&in, &out, tmpTapes);
     }
-    std::cout << "Time: " << in.getTime() + out.getTime() + tmp1.getTime() + tmp2.getTime() + tmp3.getTime() << std::endl;
+    std::cout << "Time: " << in.getTime() + out.getTime() + tmp1.getTime() + tmp2.getTime() << std::endl;
 }

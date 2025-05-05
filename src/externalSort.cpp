@@ -79,16 +79,16 @@ void SimpleSorter::merge(Tape* in, Tape* out, std::vector<int>& buf) {
 FastSorter::FastSorter(int memSize) : ExternalSorter(memSize) {}
 
 void FastSorter::sort(Tape* inTape, Tape* outTape, std::vector<Tape*>& tmpTapes) {
-    if (tmpTapes.size() < 3) {
+    if (tmpTapes.size() < 2) {
         throw std::runtime_error("Not enough tapes");
     }
     outTape->clear();
-    for (int i = 0; i < 3; ++i) {
+    for (int i = 0; i < 2; ++i) {
         tmpTapes[i]->clear();
     }
-    Tape* firstReader = tmpTapes[0];
-    Tape* secondReader = tmpTapes[1];
-    Tape* writer = tmpTapes[2];
+    Tape* firstReader = outTape;
+    Tape* secondReader = tmpTapes[0];
+    Tape* writer = tmpTapes[1];
     std::vector<int> buf = std::vector<int>(memSize);
     int inSize = inTape->size();
     for (int i = 0; i < inSize; i+=memSize) {
@@ -101,11 +101,11 @@ void FastSorter::sort(Tape* inTape, Tape* outTape, std::vector<Tape*>& tmpTapes)
     }
     firstReader->move(-inSize);
     secondReader->move(-inSize);
-    mergeSortedBlocks(firstReader, secondReader, writer, outTape);
+    mergeSortedBlocks(firstReader, secondReader, writer);
     inTape->move(-inSize);
 }
 
-void FastSorter::mergeSortedBlocks(Tape* firstReader, Tape* secondReader, Tape* writer, Tape* outTape) {
+void FastSorter::mergeSortedBlocks(Tape* firstReader, Tape* secondReader, Tape* writer) {
     int blockSize = memSize;
     int tSize = firstReader->size();
     while (blockSize < tSize) {
@@ -122,12 +122,6 @@ void FastSorter::mergeSortedBlocks(Tape* firstReader, Tape* secondReader, Tape* 
         writer->move(-tSize);
         std::swap(secondReader, writer);
     }
-    for (int i = 0; i < tSize; ++i) {
-        outTape->write(firstReader->read());
-    }
-    outTape->flush();
-    outTape->move(-tSize);
-    firstReader->move(-tSize);
 }
 
 void FastSorter::mergeMany(Tape* firstReader, Tape* secondReader, Tape* writer, int blockSize) {
