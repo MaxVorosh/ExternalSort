@@ -18,7 +18,7 @@ int main(int argc, char** argv) {
     }
     std::string inName = argv[1];
     std::string outName = argv[2];
-    int memoryLimit = std::atoi(argv[3]);
+    int memoryLimit = std::atoi(argv[3]) / sizeof(int);
     int rw = 1;
     int move = 10;
     int reset = 100;
