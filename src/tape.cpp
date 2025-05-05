@@ -30,7 +30,7 @@ void FileTape::write(int x) {
 
 void FileTape::move(int add) {
     position += add;
-    file.seekg(position);
+    file.seekg(position * sizeof(int));
 }
 
 int FileTape::size() {
@@ -54,7 +54,7 @@ void FileTape::prepareRead() {
     forReading = true;
     file.close();
     file.open(filename, std::ios::binary | std::ios::in);
-    position = 0;
+    file.seekg(position * sizeof(int));
 }
 
 void FileTape::prepareWrite() {
@@ -64,7 +64,7 @@ void FileTape::prepareWrite() {
     forReading = false;
     file.close();
     file.open(filename, std::ios::binary | std::ios::out);
-    position = 0;
+    file.seekg(position * sizeof(int));
 }
 
 bool FileTape::isReading() {
@@ -104,7 +104,7 @@ void StatTape::write(int x) {
 }
 
 void StatTape::move(int add) {
-    time += std::abs(add) * moveTime;
+    time += std::min(std::abs(add) * moveTime, resetTime);
     tape->move(add);
 }
 
