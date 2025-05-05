@@ -3,7 +3,7 @@
 #include "externalSort.h"
 
 void printUsage() {
-    std::cout << "Usage: ./ExternalSort <input file path> <output file path>" << std::endl;
+    std::cout << "Usage: ./ExternalSort <input file path> <output file path> <memory limit>" << std::endl;
     std::cout << "Optional flags:" << std::endl;
     std::cout << "-rw <number> : Timeout for reading/writing number from tape. Default 1" << std::endl;
     std::cout << "-move <number> : Timeout for moving head for one space. Default 10" << std::endl;
@@ -12,17 +12,18 @@ void printUsage() {
 }
 
 int main(int argc, char** argv) {
-    if (argc < 3 || argc % 2 == 0) {
+    if (argc < 3 || argc % 2 == 1) {
         printUsage();
         return 0;
     }
     std::string inName = argv[1];
     std::string outName = argv[2];
+    int memoryLimit = std::atoi(argv[3]);
     int rw = 1;
     int move = 10;
     int reset = 100;
     int type = 2;
-    for (int i = 3; i < argc; i+=2) {
+    for (int i = 4; i < argc; i+=2) {
         std::string key = argv[i];
         int val = std::atoi(argv[i + 1]);
         if (key == "-rw") {
@@ -46,7 +47,7 @@ int main(int argc, char** argv) {
     std::string tmpPath1 = "../tmp/1";
     std::string tmpPath2 = "../tmp/2";
     std::string tmpPath3 = "../tmp/3";
-    
+
     StatTape in = StatTape(inName, rw, move, reset);
     StatTape out = StatTape(outName, rw, move, reset);
     StatTape tmp1 = StatTape(tmpPath1, rw, move, reset);
@@ -55,11 +56,11 @@ int main(int argc, char** argv) {
     std::vector<Tape*> tmpTapes = {&tmp1, &tmp2, &tmp3};
 
     if (type == 1) {
-        SimpleSorter sorter(10);
+        SimpleSorter sorter(memoryLimit);
         sorter.sort(&in, &out, tmpTapes);
     }
     else {
-        FastSorter sorter(10);
+        FastSorter sorter(memoryLimit);
         sorter.sort(&in, &out, tmpTapes);
     }
     std::cout << "Time: " << in.getTime() + out.getTime() + tmp1.getTime() + tmp2.getTime() + tmp3.getTime() << std::endl;

@@ -45,8 +45,6 @@ void SimpleSorter::sort(Tape* inTape, Tape* outTape, std::vector<Tape*>& tmpTape
         merge(tmp, outTape, buf);
     }
     inTape->move(-inSize);
-    outTape->move(-inSize);
-    tmp->move(-tmp->size());
 }
 
 void SimpleSorter::merge(Tape* in, Tape* out, std::vector<int>& buf) {
@@ -104,6 +102,7 @@ void FastSorter::sort(Tape* inTape, Tape* outTape, std::vector<Tape*>& tmpTapes)
     firstReader->move(-inSize);
     secondReader->move(-inSize);
     mergeSortedBlocks(firstReader, secondReader, writer, outTape);
+    inTape->move(-inSize);
 }
 
 void FastSorter::mergeSortedBlocks(Tape* firstReader, Tape* secondReader, Tape* writer, Tape* outTape) {
@@ -127,6 +126,8 @@ void FastSorter::mergeSortedBlocks(Tape* firstReader, Tape* secondReader, Tape* 
         outTape->write(firstReader->read());
     }
     outTape->flush();
+    outTape->move(-tSize);
+    firstReader->move(-tSize);
 }
 
 void FastSorter::mergeMany(Tape* firstReader, Tape* secondReader, Tape* writer, int blockSize) {

@@ -17,3 +17,15 @@ add_executable(ExternalSort
 )
 
 target_include_directories(ExternalSort PUBLIC ./include)
+
+add_executable(ExternalSortTest
+    ./test/test.cpp
+    ./include/tape.h
+    ./src/tape.cpp
+    ./include/externalSort.h
+    ./src/externalSort.cpp
+)
+
+target_include_directories(ExternalSortTest PUBLIC ./include)
+
+add_test(NAME ExternalSortTest COMMAND ExternalSortTest)
